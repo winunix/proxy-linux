@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ $(id -u) != "0" ]; then
+	echo "need root"
+	exit
+fi
+
+cd /usr/proxy-linux/
+rm -rf host port auth user pass
+cd -
+
+zenity --info --text "Esta é a primeira vez que você está acessando o Proxy-Linux.\nPrecisamos das configurações do seu servidor!"
+host=$(zenity --entry --title "Configurações de Proxy" --text "Host:" --entry-text "20.20.0.1")
+port=$(zenity --entry --title "Configurações de Proxy" --text "Port:" --entry-text "8080")
+echo $host > /usr/proxy-linux/host
+echo $port > /usr/proxy-linux/port
+zenity --question --text "Seu serviço proxy necessita de autenticação?"
+isAuth=$?
+if [ $isAuth == 0 ]; then
+	touch /usr/proxy-linux/auth
+	user=$(zenity --entry --title "Configurações de Proxy" --text "Usuario:" --entry-text "aluno")
+	pass=$(zenity --entry --title "Configurações de Proxy" --text "Senha:" --entry-text "aluno")
+	echo $user > /usr/proxy-linux/user
+	echo $pass > /usr/proxy-linux/pass
+fi

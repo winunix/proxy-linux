@@ -1,0 +1,43 @@
+#!/bin/bash
+
+conf=$1
+
+case $conf in
+  "Nenhuma")
+	#Chrome
+	sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U" /usr/share/applications/google-chrome.desktop
+	#APT
+	echo "ola"
+	echo "#PROXY-LINUX ALTEROU ESSE ARQUIVO! Use ele para modificar!" > /etc/apt/apt.conf
+	;;
+  "Proxy Comum/Autenticada")
+	if [ ! -f /usr/proxy-linux/host ]; then
+		./makeconf
+	fi
+	host=$(cat /usr/proxy-linux/host)
+	port=$(cat /usr/proxy-linux/port)
+	user=$(cat /usr/proxy-linux/user)
+	pass=$(cat /usr/proxy-linux/pass)
+	#Chrome
+	sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U --proxy-server=$host:$port" /usr/share/applications/google-chrome.desktop
+	#APT
+	if [ -f /usr/proxy-linux/auth ]; then
+		cat << EOF > /etc/apt/apt.conf
+Acquire::http::proxy "http://$user:$pass@$host:$port/";
+Acquire::https::proxy "https://$user:$pass@$host:$port/";
+Acquire::ftp::proxy "ftp://$user:$pass@$host:$port/";
+Acquire::socks::proxy "socks://$user:$pass@$host:$port/";
+EOF
+	else
+		cat << EOF > /etc/apt/apt.conf
+Acquire::http::proxy "http://$host:$port/";
+Acquire::https::proxy "https://$host:$port/";
+Acquire::ftp::proxy "ftp://$host:$port/";
+Acquire::socks::proxy "socks://$host:$port/";
+EOF
+	fi
+	;;
+	"Remover Configurações do Proxy")
+		rm host port auth pass user
+	;;
+esac

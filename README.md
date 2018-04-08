@@ -1,0 +1,32 @@
+# Proxy for Linux
+
+Easy proxy service switching for browsers and others
+
+## With NPM
+
+### Install
+
+```
+sudo npm i -g --unsafe proxy-linux
+```
+
+### Uninstall
+
+```
+sudo npm uninstall -g --unsafe proxy-linux
+```
+
+## Withour NPM
+
+You need to download or clone de repository on github and execute:
+
+### Install
+
+```
+sudo ./install.sh
+```
+
+### Uninstall
+```
+sudo ./install.sh -u
+```

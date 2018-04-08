@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Proxy Linux
+Exec=/usr/proxy-linux/main
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=/usr/proxy-linux/proxy.png
+Categories=Settings;
+#Actions=NewWindow;NewPrivateWindow;

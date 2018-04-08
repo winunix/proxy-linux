@@ -1,0 +1,25 @@
+{
+  "name": "proxy-linux",
+  "version": "1.0.0",
+  "description": "Easy proxy service switching for browsers and others",
+  "main": "install.sh",
+  "scripts": {
+    "postinstall" : "sudo ./install.sh",
+    "preuninstall" : "sudo ./install.sh -u",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ailtonbsj/proxy-linux.git"
+  },
+  "keywords": [
+    "proxy",
+    "lubuntu"
+  ],
+  "author": "ailtonbsj <ailton.ifce@gmail.com> (https://ailtonbsj.wordpress.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ailtonbsj/proxy-linux/issues"
+  },
+  "homepage": "https://github.com/ailtonbsj/proxy-linux#readme"
+}
