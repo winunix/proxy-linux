@@ -12,6 +12,7 @@ if [ "$1" == "-u" ]; then
 	rm /usr/share/applications/proxy-linux.desktop
 	rm -rf /usr/proxy-linux
 	rm /home/*/Desktop/proxy-linux-sc.desktop
+	rm /home/*/Área\ de\ Trabalho/proxy-linux-sc.desktop
 	rm /etc/skel/Desktop/proxy-linux-sc.desktop
 	echo "Pronto!"
 else
