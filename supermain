@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "GKSU_SUCCESS"
+
 conf=$1
 
 case $conf in
@@ -7,7 +9,6 @@ case $conf in
 	#Chrome
 	sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U" /usr/share/applications/google-chrome.desktop
 	#APT
-	echo "ola"
 	echo "#PROXY-LINUX ALTEROU ESSE ARQUIVO! Use ele para modificar!" > /etc/apt/apt.conf
 	;;
   "Proxy Comum/Autenticada")
@@ -19,7 +20,7 @@ case $conf in
 	user=$(cat /usr/proxy-linux/user)
 	pass=$(cat /usr/proxy-linux/pass)
 	#Chrome
-	sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U --proxy-server=$host:$port" /usr/share/applications/google-chrome.desktop
+	sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U --proxy-server=$host:$port --proxy-bypass-list=\"localhost;127.0.0.1\"" /usr/share/applications/google-chrome.desktop
 	#APT
 	if [ -f /usr/proxy-linux/auth ]; then
 		cat << EOF > /etc/apt/apt.conf

@@ -16,9 +16,9 @@ sudo npm i -g --unsafe proxy-linux
 sudo npm uninstall -g --unsafe proxy-linux
 ```
 
-## Withour NPM
+## Without NPM
 
-You need to download or clone de repository on github and execute:
+You need to download or clone the repository on github and execute:
 
 ### Install
 

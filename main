@@ -2,7 +2,7 @@
 
 cd /usr/proxy-linux/
 
-conf=$(\
+escolha=$(\
 zenity --list --radiolist --title="Configurações de proxy" \
 --text="Qual configuração de Proxy deseja utilizar:" \
 --column="" \
@@ -11,12 +11,16 @@ zenity --list --radiolist --title="Configurações de proxy" \
 FALSE "Nenhuma" TRUE "Proxy Comum/Autenticada" FALSE "Squid Local (Em Breve)" FALSE "Remover Configurações do Proxy"
 )
 
-gksu ./supermain "$conf"
+saidaSuper=$(gksu ./supermain "$escolha")
+if [[ $saidaSuper != *"GKSU_SUCCESS"* ]]; then
+	zenity --info --text "Senha incorreta! Tente novamente!"
+	exit
+fi
 
 #Firefox
 perfile=~/.mozilla/firefox/$(cat ~/.mozilla/firefox/profiles.ini | grep Path= | cut -d= -f2)/prefs.js
 
-case $conf in
+case $escolha in
   "Nenhuma")
 	#Firefox TYPE
 	if [ "$(grep '"network.proxy.type"' $perfile)" == "" ]; then
