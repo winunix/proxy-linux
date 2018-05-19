@@ -2,87 +2,122 @@
 
 cd /usr/proxy-linux/
 
-escolha=$(\
+escolha=$(
 zenity --list --radiolist --title="Configurações de proxy" \
 --text="Qual configuração de Proxy deseja utilizar:" \
 --column="" \
 --column="" \
 --separator=':' \
-FALSE "Nenhuma" TRUE "Proxy Comum/Autenticada" FALSE "Squid Local (Em Breve)" FALSE "Remover Configurações do Proxy"
+FALSE "Nenhuma" \
+TRUE  "Proxy Comum/Autenticada" \
+FALSE "Remover Configurações do Proxy"
 )
 
-saidaSuper=$(gksu ./supermain "$escolha")
-if [[ $saidaSuper != *"GKSU_SUCCESS"* ]]; then
-	zenity --info --text "Senha incorreta! Tente novamente!"
-	exit
+if [ "$escolha" == "Nenhuma" ] || [ "$escolha" == "Proxy Comum/Autenticada" ]; then
+	itens=$(
+	zenity --list --checklist --title="Proxy-Linux" \
+	--height=230 \
+	--text="Quais programas deseja mudar?" \
+	--column="" \
+	--column="" \
+	--separator=':' \
+	TRUE "Firefox" \
+	TRUE "Chrome" \
+	TRUE "Chromium" \
+	TRUE "Apt" \
+	TRUE "Wget"
+	)
+	perfile=~/.mozilla/firefox/$(cat ~/.mozilla/firefox/profiles.ini | grep Path= | cut -d= -f2)/prefs.js
 fi
 
-#Firefox
-perfile=~/.mozilla/firefox/$(cat ~/.mozilla/firefox/profiles.ini | grep Path= | cut -d= -f2)/prefs.js
-
 case $escolha in
-  "Nenhuma")
-	#Firefox TYPE
-	if [ "$(grep '"network.proxy.type"' $perfile)" == "" ]; then
-		echo 'user_pref("network.proxy.type", 0);' >> $perfile
-	else
-		sed -i "/\"network.proxy.type\"/c\user_pref(\"network.proxy.type\", 0);" $perfile
-	fi
-	#WGET
-	echo "#PROXY-LINUX ALTEROU ESSE ARQUIVO! Use ele para modificar!" > ~/.wgetrc
-	zenity --info --text "Chrome, Firefox, Apt-Get, Wget Configurados!"
+	"Nenhuma")
+		if [[ $itens == *"Firefox"* ]]; then
+			#Firefox TYPE
+			if [ "$(grep '"network.proxy.type"' $perfile)" == "" ]; then
+				echo 'user_pref("network.proxy.type", 0);' >> $perfile
+			else
+				sed -i "/\"network.proxy.type\"/c\user_pref(\"network.proxy.type\", 0);" $perfile
+			fi
+		fi
+		if [[ $itens == *"Wget"* ]]; then
+			#WGET
+			echo "#PROXY-LINUX ALTEROU ESSE ARQUIVO! Use ele para modificar!" > ~/.wgetrc
+		fi
 	;;
-  "Proxy Comum/Autenticada")
-	host=$(cat /usr/proxy-linux/host)
-	port=$(cat /usr/proxy-linux/port)
-	user=$(cat /usr/proxy-linux/user)
-	pass=$(cat /usr/proxy-linux/pass)
-	#Firefox TYPE
-	if [ "$(grep '"network.proxy.type"' $perfile)" == "" ]; then
-		echo 'user_pref("network.proxy.type", 1);' >> $perfile
-	else
-		sed -i "/\"network.proxy.type\"/c\user_pref(\"network.proxy.type\", 1);" $perfile
-	fi
-	#Firefox SHARED
-	if [ "$(grep '"network.proxy.share_proxy_settings"' $perfile)" == "" ]; then
-		echo 'user_pref("network.proxy.share_proxy_settings", true);' >> $perfile
-	else
-		sed -i "/\"network.proxy.share_proxy_settings\"/c\user_pref(\"network.proxy.share_proxy_settings\", true);" $perfile
-	fi
-	#Firefox HOST
-	if [ "$(grep '"network.proxy.http"' $perfile)" == "" ]; then
-		echo "user_pref(\"network.proxy.http\", \"$host\");" >> $perfile
-	else
-		sed -i "/\"network.proxy.http\"/c\user_pref(\"network.proxy.http\", \"$host\");" $perfile
-	fi
-	#Firefox PORT
-	if [ "$(grep '"network.proxy.http_port"' $perfile)" == "" ]; then
-		echo "user_pref(\"network.proxy.http_port\", $port);" >> $perfile
-	else
-		sed -i "/\"network.proxy.http_port\"/c\user_pref(\"network.proxy.http_port\", $port);" $perfile
-	fi
-	#WGET
-	if [ -f /usr/proxy-linux/auth ]; then
-		cat << EOF > ~/.wgetrc
+	"Proxy Comum/Autenticada")
+		if [ ! -f ~/.config/proxy-linux/host ]; then
+
+			./makeconf
+		fi
+		host=$(cat ~/.config/proxy-linux/host)
+		port=$(cat ~/.config/proxy-linux/port)
+		user=$(cat ~/.config/proxy-linux/user)
+		pass=$(cat ~/.config/proxy-linux/pass)
+
+		if [[ $itens == *"Firefox"* ]]; then
+			#Firefox TYPE
+			if [ "$(grep '"network.proxy.type"' $perfile)" == "" ]; then
+				echo 'user_pref("network.proxy.type", 1);' >> $perfile
+			else
+				sed -i "/\"network.proxy.type\"/c\user_pref(\"network.proxy.type\", 1);" $perfile
+			fi
+			#Firefox SHARED
+			if [ "$(grep '"network.proxy.share_proxy_settings"' $perfile)" == "" ]; then
+				echo 'user_pref("network.proxy.share_proxy_settings", true);' >> $perfile
+			else
+				sed -i "/\"network.proxy.share_proxy_settings\"/c\user_pref(\"network.proxy.share_proxy_settings\", true);" $perfile
+			fi
+			#Firefox HOST
+			if [ "$(grep '"network.proxy.http"' $perfile)" == "" ]; then
+				echo "user_pref(\"network.proxy.http\", \"$host\");" >> $perfile
+			else
+				sed -i "/\"network.proxy.http\"/c\user_pref(\"network.proxy.http\", \"$host\");" $perfile
+			fi
+			#Firefox PORT
+			if [ "$(grep '"network.proxy.http_port"' $perfile)" == "" ]; then
+				echo "user_pref(\"network.proxy.http_port\", $port);" >> $perfile
+			else
+				sed -i "/\"network.proxy.http_port\"/c\user_pref(\"network.proxy.http_port\", $port);" $perfile
+			fi			
+		fi
+		if [[ $itens == *"Wget"* ]]; then
+			#WGET
+			if [ -f /usr/proxy-linux/auth ]; then
+				cat << EOF > ~/.wgetrc
 use_proxy=yes
 http_proxy=http://$user:$pass@$host:$port
 https_proxy=https://$user:$pass@$host:$port
 ftp_proxy=ftp://$user:$pass@$host:$port
 EOF
-	else
-		cat << EOF > ~/.wgetrc
+			else
+				cat << EOF > ~/.wgetrc
 use_proxy=yes
 http_proxy=http://$host:$port
 https_proxy=https://$host:$port
 ftp_proxy=ftp://$host:$port
 EOF
-	fi
-	zenity --info --text "Chrome, Firefox, Apt-Get, Wget Configurados!"
+			fi
+		fi
 	;;
-   "Remover Configurações do Proxy")
-	zenity --info --text "Configurações Removidas! Você precisa executar novamente!"
-    ;;
-   *)
-	zenity --info --text "Senha incorreta!"
+	"Remover Configurações do Proxy")
+		cd ~/.config/proxy-linux/
+		rm host port auth pass user
+		cd -
+		zenity --info --text "Configurações Removidas! Você precisa executar novamente!"
+		exit
+	;;
+	*)
+		echo "saindo..."
+		exit
 	;;
 esac
+
+saidaSuper=$(pkexec $(pwd)/supermain "$escolha" "$itens" "/home/$(whoami)")
+
+while [[ $saidaSuper != *"GKSU_SUCCESS"* ]]; do
+	zenity --info --text "Senha incorreta! Tente novamente!"
+	saidaSuper=$(pkexec $(pwd)/supermain "$escolha" "$itens" "/home/$(whoami)")
+done
+
+zenity --info --text "Novas configurações adicionadas com sucesso!";

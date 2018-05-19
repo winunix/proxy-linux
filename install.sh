@@ -18,7 +18,6 @@ if [ "$1" == "-u" ]; then
 else
 	#Install
 	apt-get install zenity -y
-	apt-get install gksu -y
 	mkdir /usr/proxy-linux -p
 	cp main /usr/proxy-linux
 	cp makeconf /usr/proxy-linux

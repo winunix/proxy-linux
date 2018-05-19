@@ -1,44 +1,59 @@
 #!/bin/bash
 
+echo $(id -u)
+
 echo "GKSU_SUCCESS"
 
-conf=$1
+escolha=$1
+itens=$2
+folder=$3
 
-case $conf in
+host=$(cat $folder/.config/proxy-linux/host)
+port=$(cat $folder/.config/proxy-linux/port)
+user=$(cat $folder/.config/proxy-linux/user)
+pass=$(cat $folder/.config/proxy-linux/pass)
+
+case $escolha in
   "Nenhuma")
 	#Chrome
-	sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U" /usr/share/applications/google-chrome.desktop
+	if [[ $itens == *"Chrome"* ]]; then
+		sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U" /usr/share/applications/google-chrome.desktop
+	fi
+	#Chromium
+	if [[ $itens == *"Chromium"* ]]; then
+		sed -i "/Exec=chromium-browser %U/c\Exec=chromium-browser %U" /usr/share/applications/chromium-browser.desktop
+	fi
 	#APT
-	echo "#PROXY-LINUX ALTEROU ESSE ARQUIVO! Use ele para modificar!" > /etc/apt/apt.conf
+	if [[ $itens == *"Apt"* ]]; then
+		echo "#PROXY-LINUX ALTEROU ESSE ARQUIVO! Use ele para modificar!" > /etc/apt/apt.conf
+	fi	
 	;;
   "Proxy Comum/Autenticada")
-	if [ ! -f /usr/proxy-linux/host ]; then
-		./makeconf
-	fi
-	host=$(cat /usr/proxy-linux/host)
-	port=$(cat /usr/proxy-linux/port)
-	user=$(cat /usr/proxy-linux/user)
-	pass=$(cat /usr/proxy-linux/pass)
 	#Chrome
-	sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U --proxy-server=$host:$port --proxy-bypass-list=\"localhost;127.0.0.1\"" /usr/share/applications/google-chrome.desktop
+	if [[ $itens == *"Chrome"* ]]; then
+		sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U --proxy-server=$host:$port --proxy-bypass-list=\"localhost;127.0.0.1\"" /usr/share/applications/google-chrome.desktop
+	fi
+	#Chromium
+	if [[ $itens == *"Chromium"* ]]; then
+		sed -i "/Exec=chromium-browser %U/c\Exec=chromium-browser %U --proxy-server=$host:$port --proxy-bypass-list=\"localhost;127.0.0.1\"" /usr/share/applications/chromium-browser.desktop
+	fi
 	#APT
-	if [ -f /usr/proxy-linux/auth ]; then
-		cat << EOF > /etc/apt/apt.conf
+	if [[ $itens == *"Apt"* ]]; then
+		if [ -f $folder/.config/proxy-linux/auth ]; then
+			cat << EOF > /etc/apt/apt.conf
 Acquire::http::proxy "http://$user:$pass@$host:$port/";
 Acquire::https::proxy "https://$user:$pass@$host:$port/";
 Acquire::ftp::proxy "ftp://$user:$pass@$host:$port/";
 Acquire::socks::proxy "socks://$user:$pass@$host:$port/";
 EOF
-	else
-		cat << EOF > /etc/apt/apt.conf
+		else
+			cat << EOF > /etc/apt/apt.conf
 Acquire::http::proxy "http://$host:$port/";
 Acquire::https::proxy "https://$host:$port/";
 Acquire::ftp::proxy "ftp://$host:$port/";
 Acquire::socks::proxy "socks://$host:$port/";
 EOF
+		fi
 	fi
-	;;
-	"Remover Configurações do Proxy")
-		rm host port auth pass user
 	;;
 esac
