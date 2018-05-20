@@ -47,7 +47,6 @@ case $escolha in
 	;;
 	"Proxy Comum/Autenticada")
 		if [ ! -f ~/.config/proxy-linux/host ]; then
-
 			./makeconf
 		fi
 		host=$(cat ~/.config/proxy-linux/host)
