@@ -112,11 +112,11 @@ EOF
 	;;
 esac
 
-saidaSuper=$(pkexec $(pwd)/supermain "$escolha" "$itens" "/home/$(whoami)")
+saidaSuper=$(pkexec $(pwd)/supermain "$escolha" "$itens" "$(echo ~)")
 
 while [[ $saidaSuper != *"GKSU_SUCCESS"* ]]; do
 	zenity --info --text "Senha incorreta! Tente novamente!"
-	saidaSuper=$(pkexec $(pwd)/supermain "$escolha" "$itens" "/home/$(whoami)")
+	saidaSuper=$(pkexec $(pwd)/supermain "$escolha" "$itens" "$(echo ~)")
 done
 
 zenity --info --text "Novas configurações adicionadas com sucesso!";
