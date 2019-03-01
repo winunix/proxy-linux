@@ -1,6 +1,8 @@
 # Proxy for Linux
 
-Easy proxy service switching for browsers and others
+> Easy proxy service switching for browsers and others
+
+![Example](./example.gif)
 
 ## With NPM
 
