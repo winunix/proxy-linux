@@ -82,7 +82,7 @@ case $escolha in
 		fi
 		if [[ $itens == *"Wget"* ]]; then
 			#WGET
-			if [ -f /usr/proxy-linux/auth ]; then
+			if [ -f ~/.config/proxy-linux/auth ]; then
 				cat << EOF > ~/.wgetrc
 use_proxy=yes
 http_proxy=http://$user:$pass@$host:$port
