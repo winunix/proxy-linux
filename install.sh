@@ -19,15 +19,12 @@ else
 	#Install
 	apt-get install zenity -y
 	mkdir /usr/proxy-linux -p
-	cp main /usr/proxy-linux
-	cp makeconf /usr/proxy-linux
-	cp supermain /usr/proxy-linux
-	cp proxy.png /usr/proxy-linux
-	cp proxy-linux.desktop /usr/share/applications/
-	cp proxy-linux-sc.desktop /home/*/Desktop
-	cp proxy-linux-sc.desktop /home/*/Área\ de\ Trabalho
-	#Install on Skell
 	mkdir /etc/skel/Desktop -p
-	cp proxy-linux-sc.desktop /etc/skel/Desktop
+	cp -rf deb_package/usr/ /
+	cp -rf deb_package/etc/ /
+	cp deb_package/etc/skel/Desktop/proxy-linux-sc.desktop \
+	/home/*/Desktop
+	cp deb_package/etc/skel/Desktop/proxy-linux-sc.desktop \
+	/home/*/Área\ de\ Trabalho
 	echo "Pronto!"
 fi

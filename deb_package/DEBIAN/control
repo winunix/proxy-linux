@@ -1,0 +1,11 @@
+Package: proxy-linux
+Version: 1.1.3
+Installed-Size: 
+Maintainer: ailtonbsj <ailton.ifce@gmail.com>
+Section: utils
+Architecture: all
+Priority: optional
+Depends: zenity
+Homepage: https://github.com/ailtonbsj/proxy-linux
+Description: Easy proxy service switching for browsers and others.
+ Essa ferramenta facilita o chaveamento rápido das configurações de proxy no ambiente linux. Modifica as configurações de proxy dos seguintes apps: Firefox, Google Chrome, Chromium, apt.conf e wgetrc.
