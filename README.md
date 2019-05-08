@@ -2,6 +2,15 @@
 
 > Easy proxy service switching for browsers and others
 
+Essa ferramenta facilita o chaveamento rápido das configurações de proxy no ambiente linux. Modifica as configurações de proxy dos seguintes apps:
+
+- Firefox
+- Google Chrome
+- Chromium
+- Apt (file apt.conf)
+- Wget (file .wgetrc)
+- File .profile
+
 ![Example](./example.gif)
 
 ## With NPM

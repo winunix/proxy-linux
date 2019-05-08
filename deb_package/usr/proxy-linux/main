@@ -16,7 +16,7 @@ FALSE "Remover Configurações do Proxy"
 if [ "$escolha" == "Nenhuma" ] || [ "$escolha" == "Proxy Comum/Autenticada" ]; then
 	itens=$(
 	zenity --list --checklist --title="Proxy-Linux" \
-	--height=230 \
+	--height=260 \
 	--text="Quais programas deseja mudar?" \
 	--column="" \
 	--column="" \
@@ -25,7 +25,8 @@ if [ "$escolha" == "Nenhuma" ] || [ "$escolha" == "Proxy Comum/Autenticada" ]; t
 	TRUE "Chrome" \
 	TRUE "Chromium" \
 	TRUE "Apt" \
-	TRUE "Wget"
+	TRUE "Wget" \
+	TRUE "Profile"
 	)
 	perfile=~/.mozilla/firefox/$(cat ~/.mozilla/firefox/profiles.ini | grep Path= | cut -d= -f2)/prefs.js
 fi
@@ -41,8 +42,12 @@ case $escolha in
 			fi
 		fi
 		if [[ $itens == *"Wget"* ]]; then
-			#WGET
 			echo "#PROXY-LINUX ALTEROU ESSE ARQUIVO! Use ele para modificar!" > ~/.wgetrc
+		fi
+		if [[ $itens == *"Profile"* ]]; then
+			sed -i "/http_proxy/d" ~/.profile
+			sed -i "/https_proxy/d" ~/.profile
+			sed -i "/ftp_proxy/d" ~/.profile
 		fi
 	;;
 	"Proxy Comum/Autenticada")
@@ -80,24 +85,36 @@ case $escolha in
 				sed -i "/\"network.proxy.http_port\"/c\user_pref(\"network.proxy.http_port\", $port);" $perfile
 			fi			
 		fi
+
+		if [ -f ~/.config/proxy-linux/auth ]; then
+			httpProxyStr="http_proxy=http://$user:$pass@$host:$port"
+			httpsProxyStr="https_proxy=https://$user:$pass@$host:$port"
+			ftpProxyStr="ftp_proxy=ftp://$user:$pass@$host:$port"
+		else
+			httpProxyStr="http_proxy=http://$host:$port"
+			httpsProxyStr="https_proxy=https://$host:$port"
+			ftpProxyStr="ftp_proxy=ftp://$host:$port"
+		fi
+
 		if [[ $itens == *"Wget"* ]]; then
-			#WGET
-			if [ -f ~/.config/proxy-linux/auth ]; then
-				cat << EOF > ~/.wgetrc
-use_proxy=yes
-http_proxy=http://$user:$pass@$host:$port
-https_proxy=https://$user:$pass@$host:$port
-ftp_proxy=ftp://$user:$pass@$host:$port
-EOF
+			echo "use_proxy=yes" > ~/.wgetrc
+			echo "$httpProxyStr" >> ~/.wgetrc
+			echo "$httpsProxyStr" >> ~/.wgetrc
+			echo "$ftpProxyStr" >> ~/.wgetrc
+		fi
+
+		if [[ $itens == *"Profile"* ]]; then
+			if [ "$(grep 'http_proxy' $HOME/.profile)" == "" ]; then
+				echo "export $httpProxyStr" >> ~/.profile
+				echo "export $httpsProxyStr" >> ~/.profile
+				echo "export $ftpProxyStr" >> ~/.profile
 			else
-				cat << EOF > ~/.wgetrc
-use_proxy=yes
-http_proxy=http://$host:$port
-https_proxy=https://$host:$port
-ftp_proxy=ftp://$host:$port
-EOF
+				sed -i "/http_proxy/c\export $httpProxyStr" ~/.profile
+				sed -i "/https_proxy/c\export $httpsProxyStr" ~/.profile
+				sed -i "/ftp_proxy/c\export $ftpProxyStr" ~/.profile
 			fi
 		fi
+
 	;;
 	"Remover Configurações do Proxy")
 		cd ~/.config/proxy-linux/
@@ -119,4 +136,4 @@ while [[ $saidaSuper != *"GKSU_SUCCESS"* ]]; do
 	saidaSuper=$(pkexec $(pwd)/supermain "$escolha" "$itens" "$(echo ~)")
 done
 
-zenity --info --text "Novas configurações adicionadas com sucesso!";
+zenity --info --width=350 --text "Novas configurações adicionadas com sucesso! \n\nPara alguns apps especificos você deve reiniciar!"
