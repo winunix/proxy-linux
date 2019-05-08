@@ -13,31 +13,51 @@ Essa ferramenta facilita o chaveamento rápido das configurações de proxy no a
 
 ![Example](./example.gif)
 
-## With NPM
+## How to Install
 
-### Install
+### With Debian Package
+
+#### Install
+
+You need to download the deb package. [Click here](https://github.com/ailtonbsj/proxy-linux/releases/download/1.1.3/proxy-linux_1.1.3_all.deb)
+
+You can execute using graphical program or execute the command below:
+
+```
+sudo apt install ./proxy-linux*.deb
+```
+
+#### Uninstall
+
+```
+sudo apt remove --purge proxy-linux
+```
+
+### With NPM
+
+#### Install
 
 ```
 sudo npm i -g --unsafe proxy-linux
 ```
 
-### Uninstall
+#### Uninstall
 
 ```
 sudo npm uninstall -g --unsafe proxy-linux
 ```
 
-## Without NPM
+### Manual installation
 
 You need to download or clone the repository on github and execute:
 
-### Install
+#### Install
 
 ```
 sudo ./install.sh
 ```
 
-### Uninstall
+#### Uninstall
 ```
 sudo ./install.sh -u
 ```
