@@ -88,12 +88,12 @@ case $escolha in
 
 		if [ -f ~/.config/proxy-linux/auth ]; then
 			httpProxyStr="http_proxy=http://$user:$pass@$host:$port"
-			httpsProxyStr="https_proxy=https://$user:$pass@$host:$port"
-			ftpProxyStr="ftp_proxy=ftp://$user:$pass@$host:$port"
+			httpsProxyStr="https_proxy=http://$user:$pass@$host:$port"
+			ftpProxyStr="ftp_proxy=http://$user:$pass@$host:$port"
 		else
 			httpProxyStr="http_proxy=http://$host:$port"
-			httpsProxyStr="https_proxy=https://$host:$port"
-			ftpProxyStr="ftp_proxy=ftp://$host:$port"
+			httpsProxyStr="https_proxy=http://$host:$port"
+			ftpProxyStr="ftp_proxy=http://$host:$port"
 		fi
 
 		if [[ $itens == *"Wget"* ]]; then
