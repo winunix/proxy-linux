@@ -2,7 +2,7 @@
 
 > Easy proxy service switching for browsers and others
 
-Essa ferramenta facilita o chaveamento rápido das configurações de proxy no ambiente linux. Modifica as configurações de proxy dos seguintes apps:
+This tool facilitates quick switching of proxy settings in the linux environment. Modify proxy settings for the following apps:
 
 - Firefox
 - Google Chrome
@@ -13,13 +13,18 @@ Essa ferramenta facilita o chaveamento rápido das configurações de proxy no a
 
 ![Example](./example.gif)
 
-## How to Install
+## Install with WinuniX Repository
 
-### With Debian Package
+```bash
+wget -qO - "https://winunix.github.io/debian/public.key" | sudo apt-key add -
+echo "deb https://winunix.github.io/debian focal main" | sudo tee /etc/apt/sources.list.d/winunix-focal.list
+sudo apt update
+sudo apt install proxy-linux
+```
 
-#### Install
+## Install with Debian Package
 
-You need to download the deb package. [Click here](https://github.com/ailtonbsj/proxy-linux/releases/download/1.1.3/proxy-linux_1.1.3_all.deb)
+You need to download the deb package. [Click here](https://github.com/winunix/debian/tree/master/pool/main/p/proxy-linux).
 
 You can execute using graphical program or execute the command below:
 
@@ -27,37 +32,8 @@ You can execute using graphical program or execute the command below:
 sudo apt install ./proxy-linux*.deb
 ```
 
-#### Uninstall
+## Uninstall
 
 ```
 sudo apt remove --purge proxy-linux
-```
-
-### With NPM
-
-#### Install
-
-```
-sudo npm i -g --unsafe proxy-linux
-```
-
-#### Uninstall
-
-```
-sudo npm uninstall -g --unsafe proxy-linux
-```
-
-### Manual installation
-
-You need to download or clone the repository on github and execute:
-
-#### Install
-
-```
-sudo ./install.sh
-```
-
-#### Uninstall
-```
-sudo ./install.sh -u
 ```
