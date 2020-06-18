@@ -16,12 +16,19 @@ function geraShort {
 }
 
 while read USUARIO; do
-	geraShort /usr/share/applications/proxy-linux.desktop \
-	/usr/share/applications/proxy-linux.desktop \
-	> /home/$USUARIO/Desktop/proxy-linux-sc.desktop
-	geraShort /usr/share/applications/proxy-linux.desktop \
-	/usr/share/applications/proxy-linux.desktop \
-	> /home/$USUARIO/Área\ de\ Trabalho/proxy-linux-sc.desktop
+	# geraShort /usr/share/applications/proxy-linux.desktop \
+	# /usr/share/applications/proxy-linux.desktop \
+	# > /home/$USUARIO/Desktop/proxy-linux-sc.desktop
+
+	# geraShort /usr/share/applications/proxy-linux.desktop \
+	# /usr/share/applications/proxy-linux.desktop \
+	# > /home/$USUARIO/Área\ de\ Trabalho/proxy-linux-sc.desktop
+
+	if [ -d /home/$USUARIO/Área\ de\ Trabalho/ ]; then
+		cp /usr/share/applications/proxy-linux.desktop /home/$USUARIO/Área\ de\ Trabalho/proxy-linux-sc.desktop
+	elif [ -d /home/$USUARIO/Desktop/ ]; then
+		cp /usr/share/applications/proxy-linux.desktop /home/$USUARIO/Desktop/proxy-linux-sc.desktop
+	fi
 
 	runuser -l $USUARIO -c "rm -rf /home/$USUARIO/.cache/"
 	if [ -f /usr/bin/lxpanelctl ]; then

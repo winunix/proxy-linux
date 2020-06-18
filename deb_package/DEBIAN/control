@@ -1,6 +1,6 @@
 Package: proxy-linux
-Version: 1.1.4
-Installed-Size: 
+Version: 1.1.5
+Installed-Size: 20
 Maintainer: ailtonbsj <ailton.ifce@gmail.com>
 Section: utils
 Architecture: all
