@@ -1,59 +1,54 @@
 #!/bin/bash
 
-echo $(id -u)
-
-echo "GKSU_SUCCESS"
-
-escolha=$1
-itens=$2
 folder=$3
-
 host=$(cat $folder/.config/proxy-linux/host)
 port=$(cat $folder/.config/proxy-linux/port)
 user=$(cat $folder/.config/proxy-linux/user)
 pass=$(cat $folder/.config/proxy-linux/pass)
 
-case $escolha in
-  "Nenhuma")
-	#Chrome
-	if [[ $itens == *"Chrome"* ]]; then
-		sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U" /usr/share/applications/google-chrome.desktop
-	fi
-	#Chromium
-	if [[ $itens == *"Chromium"* ]]; then
-		sed -i "/Exec=chromium-browser %U/c\Exec=chromium-browser %U" /usr/share/applications/chromium-browser.desktop
-	fi
-	#APT
-	if [[ $itens == *"Apt"* ]]; then
-		echo "#PROXY-LINUX ALTEROU ESSE ARQUIVO! Use ele para modificar!" > /etc/apt/apt.conf
-	fi	
-	;;
-  "Proxy Comum/Autenticada")
-	#Chrome
-	if [[ $itens == *"Chrome"* ]]; then
-		sed -i "/Exec=\/usr\/bin\/google-chrome-stable %U/c\Exec=\/usr\/bin\/google-chrome-stable %U --proxy-server=$host:$port --proxy-bypass-list=\"localhost;127.0.0.1\"" /usr/share/applications/google-chrome.desktop
-	fi
-	#Chromium
-	if [[ $itens == *"Chromium"* ]]; then
-		sed -i "/Exec=chromium-browser %U/c\Exec=chromium-browser %U --proxy-server=$host:$port --proxy-bypass-list=\"localhost;127.0.0.1\"" /usr/share/applications/chromium-browser.desktop
-	fi
-	#APT
-	if [[ $itens == *"Apt"* ]]; then
-		if [ -f $folder/.config/proxy-linux/auth ]; then
-			cat << EOF > /etc/apt/apt.conf
+case $1 in
+"Chrome")
+    chproxy="/usr/bin/google-chrome-stable --proxy-server=$host:$port --proxy-bypass-list=\"localhost;127.0.0.1\""
+    if [ "$2" == "PROXY" ]; then
+        sed -i "s#/usr/bin/google-chrome-stable#$chproxy#g" /usr/share/applications/google-chrome.desktop
+    else
+        sed -i "s#$chproxy#/usr/bin/google-chrome-stable#g" /usr/share/applications/google-chrome.desktop
+    fi
+    ;;
+"Chromium")
+    if [ "$2" == "PROXY" ]; then
+        sed -i "/Exec=chromium-browser %U/c\Exec=chromium-browser %U --proxy-server=$host:$port --proxy-bypass-list=\"localhost;127.0.0.1\"" /usr/share/applications/chromium-browser.desktop
+    else
+        sed -i "/Exec=chromium-browser %U/c\Exec=chromium-browser %U" /usr/share/applications/chromium-browser.desktop
+    fi
+    ;;
+"Apt")
+    if [ "$2" == "PROXY" ]; then
+        if [ -f $folder/.config/proxy-linux/auth ]; then
+            cat <<EOF >/etc/apt/apt.conf
 Acquire::http::proxy "http://$user:$pass@$host:$port/";
 Acquire::https::proxy "http://$user:$pass@$host:$port/";
 Acquire::ftp::proxy "http://$user:$pass@$host:$port/";
 Acquire::socks::proxy "http://$user:$pass@$host:$port/";
 EOF
-		else
-			cat << EOF > /etc/apt/apt.conf
+        else
+            cat <<EOF >/etc/apt/apt.conf
 Acquire::http::proxy "http://$host:$port/";
 Acquire::https::proxy "http://$host:$port/";
 Acquire::ftp::proxy "http://$host:$port/";
 Acquire::socks::proxy "http://$host:$port/";
 EOF
-		fi
-	fi
-	;;
+        fi
+    else
+        echo "#PROXY-LINUX ALTEROU ESSE ARQUIVO! Use ele para modificar!" >/etc/apt/apt.conf
+    fi
+    ;;
 esac
+
+# "Chrome")
+#     if [ "$2" == "PROXY" ]; then
+#         echo "Chrome-proxy"
+#     else
+#         echo "Chrome-thin"
+#     fi
+#     ;;

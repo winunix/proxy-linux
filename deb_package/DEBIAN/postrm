@@ -1,9 +1,0 @@
-#!/bin/bash
-
-cat /etc/passwd | grep '/home/' | \
-grep -v 'cups\|syslog' | cut -d ':' -f 6 > /tmp/homes.list
-
-while read BASEDIR; do
-    rm -rf "$BASEDIR/Desktop/proxy-linux-sc.desktop" 2>/dev/null
-    rm -rf "$BASEDIR/Área de Trabalho/proxy-linux-sc.desktop" 2>/dev/null
-done < /tmp/homes.list

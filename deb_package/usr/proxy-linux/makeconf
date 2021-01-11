@@ -4,17 +4,17 @@ mkdir ~/.config/proxy-linux/ -p
 cd ~/.config/proxy-linux/
 rm -rf host port auth user pass
 
-zenity --info --text "Esta é a primeira vez que você está acessando o Proxy-Linux.\nPrecisamos das configurações do seu servidor!"
-host=$(zenity --entry --title "Configurações de Proxy" --text "Host:" --entry-text "20.20.0.1")
-port=$(zenity --entry --title "Configurações de Proxy" --text "Port:" --entry-text "8080")
+zenity --info --width=300 --text "Esta é a primeira vez que você está acessando o Proxy-Linux.\nPrecisamos das configurações do seu servidor!"
+host=$(zenity --entry --width=350 --title "Configurações de Proxy" --text "Host:" --entry-text "20.20.0.1")
+port=$(zenity --entry --width=350 --title "Configurações de Proxy" --text "Port:" --entry-text "8080")
 echo $host > host
 echo $port > port
-zenity --question --text "Seu serviço proxy necessita de autenticação?"
+zenity --question --width=300 --text "Seu serviço proxy necessita de autenticação?"
 isAuth=$?
 if [ $isAuth == 0 ]; then
 	touch auth
-	user=$(zenity --entry --title "Configurações de Proxy" --text "Usuario:" --entry-text "aluno")
-	pass=$(zenity --entry --title "Configurações de Proxy" --text "Senha:" --entry-text "aluno")
+	user=$(zenity --entry --width=350 --title "Configurações de Proxy" --text "Usuario:" --entry-text "aluno")
+	pass=$(zenity --entry --width=350 --title "Configurações de Proxy" --text "Senha:" --entry-text "aluno")
 	echo $user > user
 	echo $pass > pass
 fi
