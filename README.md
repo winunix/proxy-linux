@@ -13,7 +13,7 @@ This tool facilitates quick switching of proxy settings in the linux environment
 
 ![Example](./example.gif)
 
-## Install with WinuniX Repository
+## Install with APT Repository
 
 ```bash
 wget -qO - "https://winunix.github.io/debian/public.key" | sudo apt-key add -
